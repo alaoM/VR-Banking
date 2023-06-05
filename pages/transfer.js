@@ -71,7 +71,7 @@ export default function Transfer() {
       const { name } = __xyz;
       let text = `Welcome ${name}, Please what would you like to do today?`;
       handleSpeak(text);
-      router.push("/dashboard");
+      router.push("/");
     }
   };
   const [isSubmitting, setIsSubmitting] = useState(false);

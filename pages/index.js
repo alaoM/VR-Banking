@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { biodata } from "@/utils/biodata";
 import VoiceRecognition from "@/components/VoiceRecorgnition";
+import { handleSpeak } from "@/utils/handleSpeak";
 
 export default function Home() {
   const router = useRouter();
@@ -29,6 +30,8 @@ export default function Home() {
     fetchData();
   }, []);
    const balState = (data) => {
+    let text = `Your account balance is ${user.bal} naira`
+    handleSpeak(text)
     setShowBalance(data);
   };
   const showB = () => {

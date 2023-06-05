@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 const VoiceRecognition = ({ balanceState }) => {
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const [listen, setListen] = useState(false);
 
   const commands = [
     {
@@ -19,8 +20,8 @@ const VoiceRecognition = ({ balanceState }) => {
       callback: () => router.push("/transfer"),
     },
     {
-      command: ["go back", "home", "balance"],
-      callback: () => router.push("/dashboard"),
+      command: ["go back", "home"],
+      callback: () => router.push("/"),
     },
     {
       command: "shut up",
@@ -77,6 +78,7 @@ const VoiceRecognition = ({ balanceState }) => {
   };
 
   const startListening = () => {
+    setListen(true);
     SpeechRecognition.startListening({
       continuous: true,
       language: "en-GB",
@@ -85,56 +87,35 @@ const VoiceRecognition = ({ balanceState }) => {
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
+    setListen(false);
   };
 
   return (
     <div>
-      <p>Message: {message}</p>
-      <p>Transcript: {transcript}</p>
-
-      <div className="card-footer bg-transparent border-top px-md-5 d-flex justify-content-between align-items-center text-center">
-        <div className="row d-flex align-items-center justify-content-between">
-          <div className="col-9 d-block border w-75">
-            
-          {listening && <AudioVisuals />}
-          </div>
-          <div className="col-md-3">
-          <span className="fa fa-eye-slash" onClick={startListening}></span>
-          <span className="fa fa-eye-slash" onClick={stopListening}></span>
-          </div>
+      {/*     <p>Message: {message}</p>
+      <p>Transcript: {transcript}</p> */}
+      <div className="card-footer bg-transparent border-top px-md-5 text-center">
+        <p> {listening && <AudioVisuals />}</p>
+        <div className="d-flex justify-content-center align-items-center">
+          {listening ? (
+            <div className="me-3 icon-box text-danger">
+              <span
+                className="fa fa-microphone-slash h1"
+                onClick={stopListening}
+              ></span>
+            </div>
+          ) : (
+            <div className="me-3 icon-box">
+              <span
+                className="fa fa-microphone h1"
+                onClick={startListening}
+              ></span>
+            </div>
+          )}
         </div>
 
-        {/*    <div>{listening && <AudioVisuals />}</div>
-        <div>
-          <span className="fa fa-eye-slash" onClick={startListening}></span>
-        </div>
-      </div> */}
-        {/* <div className="row">
-        <div className="col-9">
-          <div className="graph">{listening && <AudioVisuals />}</div>
-        </div>
-        <div className="col-3">
-          <div className="mic">
-            <span className="fa fa-eye-slash" onClick={startListening}></span>
-          </div>{" "}
-          <div className="mic">
-            <span className="fa fa-eye-slash" onClick={stopListening}></span>
-          </div>
-        </div>
-      </div> */}
+         
       </div>
-
-      {/* Additional functionality:
-      <button onClick={resetTranscript}>Reset Transcript</button>
-      <button onClick={stopListening}>Stop Listening</button>
-      <textarea
-        value={text}
-        onChange={handleInputChange}
-        placeholder="Enter text to speak"
-      />
-      <button onClick={handleSpeak}>Speak</button>
-      {speak && <Speech text={transcript} voice="Google UK English Female" />}
-      */}
     </div>
   );
 };
