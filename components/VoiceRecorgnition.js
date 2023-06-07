@@ -87,13 +87,14 @@ const VoiceRecognition = ({ balanceState }) => {
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
+    resetTranscript()
     setListen(false);
   };
 
   return (
     <div>
-      {/*     <p>Message: {message}</p>
-      <p>Transcript: {transcript}</p> */}
+    <p>Message: {message}</p> 
+      <p>Transcript: {transcript}</p> 
       <div className="card-footer bg-transparent border-top px-md-5 text-center">
         <p> {listening && <AudioVisuals />}</p>
         <div className="d-flex justify-content-center align-items-center">

@@ -57,7 +57,7 @@ export default function Transfer() {
       (entry) =>
         entry.password === data.password && entry.username === data.username
     );
-    console.log(matchingEntry);
+ 
     if (!matchingEntry) {
       setResp({
         type: "error",
