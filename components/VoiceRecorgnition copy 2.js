@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import AudioVisuals from "./AudioVisuals";
 
 const VoiceRecognition = ({ balanceState }) => {
   const [message, setMessage] = useState("");
   const router = useRouter();
   const [listen, setListen] = useState(false);
-  let recognition;
-
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SpeechRecognition(); // Create a new instance of SpeechRecognition
 
   const commands = [
     {
@@ -65,22 +63,16 @@ const VoiceRecognition = ({ balanceState }) => {
     },
   ];
 
+  const { transcript, resetTranscript, listening } = useSpeechRecognition({
+    commands,
+  });
+
   useEffect(() => {
-    // Configure the recognition object
-
-    recognition.lang = "en-GB";
-    recognition.continuous = true;
-    recognition.onresult = handleSpeechResult;
-
-    return () => {
-      recognition.stop(); // Clean up the recognition object on component unmount
-    };
-  }, []);
-  const handleSpeechResult = (event) => {
-    const { transcript } = event.results[event.results.length - 1][0];
-    console.log("Transcript:", transcript);
-    processTranscript(transcript);
-  };
+    if (transcript !== "") {
+      console.log("Transcript:", transcript);
+      processTranscript(transcript);
+    }
+  }, [transcript]);
 
   const processTranscript = (transcript) => {
     const sentences = transcript.split("."); // Split transcript into individual sentences
@@ -139,29 +131,27 @@ const VoiceRecognition = ({ balanceState }) => {
   };
 
   const startListening = () => {
-    console.log("recognition start", recognition);
-
     setListen(true);
-    recognition.start();
+    SpeechRecognition.startListening({
+      continuous: true,
+      language: "en-GB",
+    });
   };
 
   const stopListening = () => {
-    recognition.onspeechend = () => {
-      recognition.stop();
-    };
-    // console.log("recognition stop", recognition)
-    // recognition.onend();
+    SpeechRecognition.stopListening();
+    resetTranscript();
     setListen(false);
   };
 
   return (
     <div>
       <p>Message: {message}</p>
-      <p>Transcript: </p>
+      <p>Transcript: {transcript}</p>
       <div className="card-footer bg-transparent border-top px-md-5 text-center">
-        <p> {listen && <AudioVisuals />}</p>
+        <p> {listening && <AudioVisuals />}</p>
         <div className="d-flex justify-content-center align-items-center">
-          {listen ? (
+          {listening ? (
             <div className="me-3 icon-box text-danger">
               <span
                 className="fa fa-microphone-slash h1"
